@@ -10,7 +10,6 @@ const origins = (process.env.CLIENT_ORIGIN || "http://localhost:3000").split(","
 app.use(cors({ origin: origins, credentials: true }));
 app.use(express.json());
 
-app.get("/", (_req, res) => res.json({ name: "BookNook API", status: "running" }));
 app.use("/books", booksRouter);
 app.use("/borrows", borrowsRouter);
 
