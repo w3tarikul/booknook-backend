@@ -2,7 +2,7 @@ import "dotenv/config";
 import app from "./app";
 import { connectDB, getCollection } from "./config/db";
 
-const port = Number(process.env.PORT) || 5000;
+const port = Number(process.env.PORT) || 5001;
 
 async function start() {
   await connectDB();
