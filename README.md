@@ -2,8 +2,9 @@
 
 REST API for **BookNook**, a small online library where readers add books, borrow them for a few days and return them.
 
+- Live site: https://booknook-by-tarikul.vercel.app
 - Client repo: [booknook-frontend](https://github.com/w3tarikul/booknook-frontend)
-- Live API: _added after deployment_
+- Live API: https://booknook-backend-three.vercel.app
 
 ## Tech stack
 
