@@ -29,3 +29,9 @@ export async function getCollection<T extends object = any>(name: string): Promi
   const database = await connectDB();
   return database.collection<T>(name);
 }
+
+export async function disconnectDB() {
+  await client?.close();
+  client = null;
+  db = null;
+}
