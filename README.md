@@ -13,7 +13,7 @@ Express 5, TypeScript, MongoDB (native driver), JSON Web Tokens, deployed on Ver
 
 The client signs users in with Better Auth. This server never sees passwords or sessions. It only trusts a JWT:
 
-1. A signed-in user asks the client for a token (`/api/token`). The client checks the Better Auth session and signs a JWT (HS256, 1 hour expiry) holding the user's id, name and email.
+1. A signed-in user asks the client for a token (`/api/token`). The client checks the Better Auth session and signs a JWT (HS256, 3 day expiry) holding the user's id, name and email.
 2. The client sends it as `Authorization: Bearer <token>`.
 3. `verifyToken` middleware checks the signature and expiry with the shared `JWT_SECRET`. Missing, invalid or expired tokens get `401`.
 4. The user is read from the verified token, never from the request body. Owners can only edit or delete their own books (`403` otherwise), and borrowers can only return their own borrows.
