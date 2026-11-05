@@ -46,10 +46,12 @@ router.get("/:id", verifyToken, async (req, res, next) => {
 router.post("/", verifyToken, async (req, res, next) => {
   try {
     const { title, author, category, image, description, totalCopies } = req.body ?? {};
-    const copies = Number(totalCopies);
-    if (!title || !author || !category || !image || !description || !Number.isInteger(copies) || copies < 1) {
-      return res.status(400).json({ message: "Please fill in every field and use at least 1 copy." });
+    const copies = toCopies(totalCopies);
+    if (!title || !author || !category || !image || !description || copies === null) {
+      return res.status(400).json({ message: "Please fill in every field and use between 1 and 1000 copies." });
     }
+    const long = tooLong({ title, author, category, image, description });
+    if (long) return res.status(400).json({ message: long });
     const doc: Book = {
       title: String(title).trim(),
       author: String(author).trim(),
@@ -82,14 +84,16 @@ router.patch("/:id", verifyToken, async (req, res, next) => {
     if (existing.ownerId !== req.user!.id) {
       return res.status(403).json({ message: "You can only edit books you added." });
     }
+    const long = tooLong(req.body ?? {});
+    if (long) return res.status(400).json({ message: long });
     const update: Partial<Book> = {};
     for (const key of ["title", "author", "category", "image", "description"] as const) {
       if (typeof req.body?.[key] === "string" && req.body[key].trim()) update[key] = req.body[key].trim();
     }
     if (req.body?.totalCopies !== undefined) {
-      const copies = Number(req.body.totalCopies);
-      if (!Number.isInteger(copies) || copies < 1) {
-        return res.status(400).json({ message: "Total copies must be a whole number of 1 or more." });
+      const copies = toCopies(req.body.totalCopies);
+      if (copies === null) {
+        return res.status(400).json({ message: "Total copies must be a whole number between 1 and 1000." });
       }
       const borrowed = existing.totalCopies - existing.availableCopies;
       if (copies < borrowed) {
