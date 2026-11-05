@@ -3,10 +3,9 @@ import { ObjectId } from "mongodb";
 import { getCollection } from "../config/db";
 import { verifyToken } from "../middleware/auth";
 import { Book } from "../types";
+import { isValidId, toCopies, tooLong } from "../utils/validators";
 
 const router = Router();
-
-const validId = (id: string) => ObjectId.isValid(id);
 
 // GET /books - public list (supports ?sort=newest&limit=6&search=&category=&ownerId=)
 router.get("/", async (req, res, next) => {
@@ -33,7 +32,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", verifyToken, async (req, res, next) => {
   try {
     const id = String(req.params.id);
-    if (!validId(id)) return res.status(400).json({ message: "That book id is not valid." });
+    if (!isValidId(id)) return res.status(400).json({ message: "That book id is not valid." });
     const books = await getCollection<Book>("books");
     const book = await books.findOne({ _id: new ObjectId(id) });
     if (!book) return res.status(404).json({ message: "We could not find that book." });
@@ -76,7 +75,7 @@ router.post("/", verifyToken, async (req, res, next) => {
 router.patch("/:id", verifyToken, async (req, res, next) => {
   try {
     const id = String(req.params.id);
-    if (!validId(id)) return res.status(400).json({ message: "That book id is not valid." });
+    if (!isValidId(id)) return res.status(400).json({ message: "That book id is not valid." });
     const books = await getCollection<Book>("books");
     const existing = await books.findOne({ _id: new ObjectId(id) });
     if (!existing) return res.status(404).json({ message: "We could not find that book." });
@@ -110,7 +109,7 @@ router.patch("/:id", verifyToken, async (req, res, next) => {
 router.delete("/:id", verifyToken, async (req, res, next) => {
   try {
     const id = String(req.params.id);
-    if (!validId(id)) return res.status(400).json({ message: "That book id is not valid." });
+    if (!isValidId(id)) return res.status(400).json({ message: "That book id is not valid." });
     const books = await getCollection<Book>("books");
     const existing = await books.findOne({ _id: new ObjectId(id) });
     if (!existing) return res.status(404).json({ message: "We could not find that book." });
