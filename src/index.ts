@@ -1,10 +1,12 @@
 import "dotenv/config";
 import app from "./app";
 import { connectDB, getCollection } from "./config/db";
+import { checkEnv } from "./config/env";
 
 const port = Number(process.env.PORT) || 5001;
 
 async function start() {
+  checkEnv();
   await connectDB();
   const borrows = await getCollection("borrows");
   await borrows.createIndex({ bookId: 1, userId: 1 }, { unique: true });
