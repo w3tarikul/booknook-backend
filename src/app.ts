@@ -8,7 +8,7 @@ import { requestLogger } from "./middleware/logger";
 const app = express();
 
 const origins = (process.env.CLIENT_ORIGIN || "http://localhost:3000").split(",").map((o) => o.trim());
-app.use(cors({ origin: origins, credentials: true }));
+app.use(cors({ origin: origins, methods: ["GET", "POST", "PATCH", "DELETE"], allowedHeaders: ["Content-Type", "Authorization"] }));
 app.use(express.json({ limit: "100kb" }));
 if (process.env.NODE_ENV !== "production") app.use(requestLogger);
 
